@@ -11,3 +11,13 @@ export interface Quiz {
   section_id: number;
   orderBy: number;
 }
+
+export type Answer = {
+  title: string;
+  order: number;
+  correct: boolean;
+  id: string | null;
+  answerType: QuestionType;
+};
+
+export type QuestionType = "SINGLE_CHOICE" | "MULTI_CHOICE" | "ORDER";
