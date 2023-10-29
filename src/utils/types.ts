@@ -12,6 +12,14 @@ export interface Quiz {
   orderBy: number;
 }
 
+export type Question = {
+  questionTitle: string;
+  order: number;
+  type: QuestionType;
+  answer: Array<Answer>;
+  id: number | "null" | null;
+};
+
 export type Answer = {
   title: string;
   order: number;
