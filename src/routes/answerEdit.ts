@@ -2,33 +2,34 @@ import { Request, Response, json } from "express";
 import { ConnectUtils } from "../utils/connect.js";
 import { Answer } from "../utils/types.js";
 import createQuestion from "./utils/createQuestion.js";
+import { ResultSetHeader } from "mysql2/promise";
 
 export default async (req: Request, res: Response) => {
-  let questionId = req.params.questionId;
+  let questionId = Number(req.params.questionId);
   const db = await ConnectUtils.DBConnect();
   console.log("questionId: " + questionId);
-  if (questionId == null || `${questionId}` === "null") {
-    console.log("questionId is null");
-    const qid = await createQuestion(db, req.body);
-    console.log(qid);
+  if (`${questionId}` === "NaN") {
+    console.log("questionId is NaN");
+    questionId = await createQuestion(db, req.body);
+    console.log(questionId);
   }
 
-  // const insertStmt = `REPLACE INTO Answers (id, orderBy, question_id, answer_title, correct_answer) VALUES ?`;
-  // const values = req.body.map((answer: Answer) => [
-  //   answer.id,
-  //   answer.order,
-  //   questionId,
-  //   answer.title,
-  //   answer.correct,
-  // ]);
+  console.log("creating answers");
 
-  // db.connect((err) => {
-  //   if (err) throw err;
-  //   console.log("Connected for answer edit!");
-  //   db.query(insertStmt, [values], (err, result) => {
-  //     if (err) throw err;
-  //     console.log("Result: " + result);
-  //     res.json(result);
-  //   });
-  // });
+  const insertStmt = `REPLACE INTO Answers (orderBy, question_id, answer_title, correct_answer) VALUES ?`;
+  const values = req.body.answer.map((answer: Answer) => [
+    answer.order,
+    questionId,
+    answer.title,
+    answer.correct,
+  ]);
+
+  console.log("answers mapped, inserting");
+  try {
+    const [result] = await db.query<ResultSetHeader>(insertStmt, [values]);
+    console.log("success", result);
+    res.json(result);
+  } catch (error) {
+    throw error;
+  }
 };

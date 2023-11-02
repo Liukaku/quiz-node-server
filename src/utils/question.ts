@@ -1,14 +1,14 @@
 import { Quiz } from "./types.js";
 
 export class Question {
-  question_id: number;
+  id: number;
   questionTitle: string;
   question_bg: string;
   type: string;
   from_section_id: number;
   order: number;
   constructor(question: Quiz) {
-    this.question_id = question.id;
+    this.id = question.id;
     this.questionTitle = question.question_title;
     this.question_bg = question.question_background;
     this.type = question.question_type;
@@ -18,7 +18,7 @@ export class Question {
 
   getQuestion() {
     return {
-      question_id: this.question_id,
+      id: this.id,
       questionTitle: this.questionTitle,
       question_bg: this.question_bg,
       type: this.type,
